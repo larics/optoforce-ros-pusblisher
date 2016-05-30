@@ -53,8 +53,8 @@ int main(int argc, char **argv)
                 wrench_msg.force.y = pack6D.Fy;
                 wrench_msg.force.z = pack6D.Fz;
                 wrench_msg.torque.x = pack6D.Tx;
-                wrench_msg.torque.x = pack6D.Ty;
-                wrench_msg.torque.x = pack6D.Tz;
+                wrench_msg.torque.y = pack6D.Ty;
+                wrench_msg.torque.z = pack6D.Tz;
                 wrench_pub.publish(wrench_msg);
                 ros::spinOnce();
                 loop_rate.sleep();
