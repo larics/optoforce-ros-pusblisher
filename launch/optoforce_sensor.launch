@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<launch>
+
+    <arg name="namespace" default="/"/>
+    <arg name="sens_params_file" default="hex-70-ce-2000n-ice044.yaml" />
+
+    <group ns="$(arg namespace)">
+
+        <rosparam file="$(find optoforce_sensor)/cfg/$(arg sens_params_file)" command="load"/>
+
+        <node name="optoforce_node" pkg="optoforce_sensor" type="optoforce_sensor_node" output="screen"/>
+
+    </group>
+
+</launch>
