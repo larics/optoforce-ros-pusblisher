@@ -18,8 +18,12 @@ int main(int argc, char **argv)
     OptoPorts ports;
     msSleep(2500); // We wait some ms to be sure about OptoPorts enumerated PortList
 
+    SensorConfig config;
+
     double fx_gain, fy_gain, fz_gain;  // sensitivity gain in counts/N
     double tx_gain, ty_gain, tz_gain;  // sensitivity gain in count/Nm
+
+    int speed, filter;
 
     u_int8_t sens_params_set = 1;
 
@@ -60,6 +64,9 @@ int main(int argc, char **argv)
             n.param("ty_gain", ty_gain, 0.0);
             n.param("tz_gain", tz_gain, 0.0);
 
+            n.param("speed", speed, 1000);
+            n.param("filter", filter, 0);
+
             double double_thresh = 0.0001;
 
             if (fx_gain < 0.0001 || fy_gain < 0.0001 || fz_gain < 0.001) {
@@ -72,8 +79,30 @@ int main(int argc, char **argv)
                 sens_params_set = 0;
             }
 
-            //Set ROS rate to 100 Hz
-            ros::Rate loop_rate(100);
+            config = daq.getConfig();
+
+            if (speed != 30 && speed != 100 && speed != 333 && speed != 1000) {
+                std::cout<<"The speed of the package not set properly. Using default speed of 100 Hz."<<std::endl;
+                speed = 100;
+            }
+
+            if (filter != 150 && filter != 50 && filter != 15 && filter != 0){
+                std::cout<<"The filter of the package not set properly. Using default filter of 0 Hz."<<std::endl;
+                filter = 0;
+            }
+
+            config.setSpeed(speed);
+            config.setFilter(filter);
+            config.setMode(1);
+
+            daq.sendConfig(config);
+
+            std::cout<<"Optoforce sensor speed: "<<daq.getConfig().getSpeed()<<" Hz"<<std::endl;
+            std::cout<<"Optoforce sensor filter "<<daq.getConfig().getFilter()<<" Hz"<<std::endl;
+            std::cout<<"Optoforce sensor mode "<<daq.getConfig().getMode()<<std::endl;
+
+            //Set ROS rate to speed Hz
+            ros::Rate loop_rate(speed);
             //Main ROS loop
             while(ros::ok())
             {
@@ -102,7 +131,7 @@ int main(int argc, char **argv)
                 ros::spinOnce();
                 loop_rate.sleep();
                 size = daq.read6D(pack6D,false);
-                std::cout<<size<<std::endl;
+                //std::cout<<size<<std::endl;
             }
             //std::cout<<"Fx: "<<pack6D.Fx<<" Fy: "<<pack6D.Fy<<" Fz: "<<pack6D.Fz<<" ";
             //std::cout<<"Tx: "<<pack6D.Tx<<" Ty: "<<pack6D.Ty<<" Tz: "<<pack6D.Tz<<std::endl;

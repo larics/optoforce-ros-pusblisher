@@ -5,3 +5,5 @@ optoforce_node:
     tx_gain : 587.20
     ty_gain : 566.37
     tz_gain : 868.35
+    speed: 1000
+    filter: 0
