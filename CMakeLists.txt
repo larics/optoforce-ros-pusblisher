@@ -127,7 +127,7 @@ include_directories(
 ## Declare a C++ executable
 # add_executable(optoforce_sensor_node src/optoforce_sensor_node.cpp)
 add_executable(optoforce_sensor_node src/optoforce_sensor_node.cpp)
-set(OMD_BIN ${PROJECT_SOURCE_DIR}/lib/libOMD.so)
+set(OMD_BIN ${PROJECT_SOURCE_DIR}/lib/libOptoForceAPI.so)
 #add_library(libomd 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
