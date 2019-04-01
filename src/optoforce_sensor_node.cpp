@@ -65,7 +65,7 @@ int main(int argc, char **argv)
             n.param("tz_gain", tz_gain, 0.0);
 
             n.param("speed", speed, 1000);
-            n.param("filter", filter, 0);
+            n.param("filter", filter, 150);
 
             double double_thresh = 0.0001;
 
