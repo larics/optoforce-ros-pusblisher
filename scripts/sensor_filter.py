@@ -12,7 +12,7 @@ class sensorFilter():
 		rospy.Subscriber("/optoforce_node/OptoForceWrench", WrenchStamped, self.OptoforceSensorCallback)
 
 		# Publishers
-		self.sensorFilteredPub = rospy.Publisher('/optoforce_node/OptoForceWrench_filtered', WrenchStamped, queue_size = 1)
+		self.sensorFilteredPub = rospy.Publisher('/optoforce_node/OptoForceWrench_filtered2', WrenchStamped, queue_size = 1)
 
 		self.sensorReadings = []
 		self.readingCount = 0
@@ -21,59 +21,56 @@ class sensorFilter():
 		self.sensorReadingAvaraged_old = WrenchStamped()
 		self.filterCoef = 1
 
+
+		#filter coefs
+		self.a0 = 0.003796
+		self.a1 = 0.007591
+		self.a2 = 0.003796
+		self.b0 = 0.9254
+		self.b1 = -1.91
+		self.b2 = 1.0
+
+		self.filter_u = [0, 0, 0, 0, 0, 0]		# input u(k)
+		self.filter_u_k = [0, 0, 0, 0, 0, 0]	# input u(k-1)
+		self.filter_u_kk = [0, 0, 0, 0, 0, 0]	# input u(k-2)
+
+		self.filter_y = [0, 0, 0, 0, 0, 0]		# input y(k)
+		self.filter_y_k = [0, 0, 0, 0, 0, 0]	# input y(k-1)
+		self.filter_y_kk = [0, 0, 0, 0, 0, 0]	# input y(k-2)
+
 	def OptoforceSensorCallback(self, msg):
 
-		if (self.readingCount < 9):
-			self.sensorReadings.append(msg)
-			self.readingCount = self.readingCount + 1
-		else:
-			#perform calculation
-			Fx = 0
-			Fy = 0
-			Fz = 0
-			Tx = 0
-			Ty = 0
-			Tz = 0
+
+		self.filter_u = [msg.wrench.force.x, msg.wrench.force.y, msg.wrench.force.z, msg.wrench.torque.x, msg.wrench.torque.y, msg.wrench.torque.z]
+
+		for i in range(0, 6):
+			self.filter_y[i] = (self.a2/self.b2)*self.filter_u[i] + (self.a1/self.b2)*self.filter_u_k[i] + (self.a0/self.b2)*self.filter_u_kk[i] - (self.b1/self.b2)*self.filter_y_k[i] - (self.b0/self.b2)*self.filter_y_kk[i]  
+
+
+		self.sensorReadingAvaraged.header.stamp = msg.header.stamp #.Time.now()
+		self.sensorReadingAvaraged.wrench.force.x = self.filter_y[0]
+		self.sensorReadingAvaraged.wrench.force.y = self.filter_y[1]
+		self.sensorReadingAvaraged.wrench.force.z = self.filter_y[2]
+		self.sensorReadingAvaraged.wrench.torque.x = self.filter_y[3]
+		self.sensorReadingAvaraged.wrench.torque.y = self.filter_y[4]
+		self.sensorReadingAvaraged.wrench.torque.z = self.filter_y[5]
 			
-			for reading in self.sensorReadings:
+		self.sensorFilteredPub.publish(self.sensorReadingAvaraged)
 
-				Fx = Fx + reading.wrench.force.x
-				Fy = Fy + reading.wrench.force.y
-				Fz = Fz + reading.wrench.force.z
-				Tx = Tx + reading.wrench.torque.x
-				Ty = Ty + reading.wrench.torque.y
-				Tz = Tz + reading.wrench.torque.z
+		# update old states
 
-			self.sensorReadingAvaraged.header.stamp = rospy.Time.now()
-			self.sensorReadingAvaraged.wrench.force.x = Fx / 9.0
-			self.sensorReadingAvaraged.wrench.force.y = Fy / 9.0
-			self.sensorReadingAvaraged.wrench.force.z = Fz / 9.0
-			self.sensorReadingAvaraged.wrench.torque.x = Tx / 9.0
-			self.sensorReadingAvaraged.wrench.torque.y = Ty / 9.0
-			self.sensorReadingAvaraged.wrench.torque.z = Tz / 9.0
-			
-
-			# PT1
-			self.sensorReadingAvaraged.wrench.force.x = self.filterCoef*self.sensorReadingAvaraged.wrench.force.x + (1-self.filterCoef)*self.sensorReadingAvaraged_old.wrench.force.x
-			self.sensorReadingAvaraged.wrench.force.y = self.filterCoef*self.sensorReadingAvaraged.wrench.force.y + (1-self.filterCoef)*self.sensorReadingAvaraged_old.wrench.force.y
-			self.sensorReadingAvaraged.wrench.force.z = self.filterCoef*self.sensorReadingAvaraged.wrench.force.z + (1-self.filterCoef)*self.sensorReadingAvaraged_old.wrench.force.z
-			self.sensorReadingAvaraged.wrench.torque.x = self.filterCoef*self.sensorReadingAvaraged.wrench.torque.x + (1-self.filterCoef)*self.sensorReadingAvaraged_old.wrench.torque.x
-			self.sensorReadingAvaraged.wrench.torque.y = self.filterCoef*self.sensorReadingAvaraged.wrench.torque.y + (1-self.filterCoef)*self.sensorReadingAvaraged_old.wrench.torque.y
-			self.sensorReadingAvaraged.wrench.torque.z = self.filterCoef*self.sensorReadingAvaraged.wrench.torque.z + (1-self.filterCoef)*self.sensorReadingAvaraged_old.wrench.torque.z
-			
-			self.sensorReadingAvaraged_old = self.sensorReadingAvaraged
-
-			self.sensorFilteredPub.publish(self.sensorReadingAvaraged)
-
-			self.readingCount = 0
-			self.sensorReadings = []
+		for i in range(0, 6):
+			self.filter_y_kk[i] = self.filter_y_k[i]
+			self.filter_y_k[i] = self.filter_y[i]
+			self.filter_u_kk[i] = self.filter_u_k[i]
+			self.filter_u_k[i] = self.filter_u[i]
 
 	def run(self):
 		
 		while not rospy.is_shutdown():
 
 			#print "running"
-			rospy.sleep(0.01)
+			rospy.sleep(0.001)
 
 
 if __name__ == '__main__':
