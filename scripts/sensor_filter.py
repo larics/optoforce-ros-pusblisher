@@ -23,9 +23,9 @@ class sensorFilter():
 
 
 		#filter coefs
-		self.a0 = 0.003796
-		self.a1 = 0.007591
-		self.a2 = 0.003796
+		self.a0 = 0.00385
+		self.a1 = 0.007699
+		self.a2 = 0.00385
 		self.b0 = 0.9254
 		self.b1 = -1.91
 		self.b2 = 1.0
