@@ -12,7 +12,7 @@ class sensorFilter():
 		rospy.Subscriber("/optoforce_node/OptoForceWrench", WrenchStamped, self.OptoforceSensorCallback)
 
 		# Publishers
-		self.sensorFilteredPub = rospy.Publisher('/optoforce_node/OptoForceWrench_filtered2', WrenchStamped, queue_size = 1)
+		self.sensorFilteredPub = rospy.Publisher('/fdcc/sensor_reading', WrenchStamped, queue_size = 1)
 
 		self.sensorReadings = []
 		self.readingCount = 0
