@@ -3,7 +3,7 @@
 import rospy
 import csv
 from geometry_msgs.msg import WrenchStamped
-
+import copy
 
 
 class sensorFilter():
@@ -20,6 +20,15 @@ class sensorFilter():
 		self.sensorReadingAvaraged = WrenchStamped()
 		self.sensorReadingAvaraged_old = WrenchStamped()
 		self.filterCoef = 1
+
+		# median filter
+		self.med_window = 6
+		self.med_Fx = []
+		self.med_Fy = []
+		self.med_Fz = []
+		self.med_Tx = []
+		self.med_Ty = []
+		self.med_Tz = []
 
 
 		#filter coefs
@@ -38,9 +47,32 @@ class sensorFilter():
 		self.filter_y_k = [0, 0, 0, 0, 0, 0]	# input y(k-1)
 		self.filter_y_kk = [0, 0, 0, 0, 0, 0]	# input y(k-2)
 
+	def MedianFilter(self, signal):
+		
+		sum = 0
+
+		for val in signal:
+			sum += val
+
+		avr = sum/len(signal)
+
+		min_num = 0
+		max_num = 0
+
+		for val in signal:
+			if (val >= avr):
+				max_num += 1
+			else:
+				min_num += 1
+
+		if (max_num >= min_num):
+			return signal[-1]
+		else:
+			return signal[0]		
+		
+
 	def OptoforceSensorCallback(self, msg):
-
-
+		
 		self.filter_u = [msg.wrench.force.x, msg.wrench.force.y, msg.wrench.force.z, msg.wrench.torque.x, msg.wrench.torque.y, msg.wrench.torque.z]
 
 		for i in range(0, 6):
@@ -64,6 +96,16 @@ class sensorFilter():
 			self.filter_y_k[i] = self.filter_y[i]
 			self.filter_u_kk[i] = self.filter_u_k[i]
 			self.filter_u_k[i] = self.filter_u[i]
+						
+		'''
+		
+		self.sensorReadingAvaraged = msg;
+		
+		self.sensorFilteredPub.publish(self.sensorReadingAvaraged)
+
+		'''	
+		
+
 
 	def run(self):
 		
