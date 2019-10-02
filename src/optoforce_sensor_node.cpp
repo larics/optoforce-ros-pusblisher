@@ -66,11 +66,12 @@ int main(int argc, char **argv)
             std::cout << i + 1 << ". DAQ could not be opened!" << std::endl;
             continue;
         }
-        
+  
         OptoConfig config;
         config.SetSpeed(1000);
         config.SetFilter(1);
         config.SetZeroing(0);
+
 
         success = daqs[i].SendConfig(config); // Set up the speed to 1000 Hz and filtering to 150 Hz
         std::cout << "Set speed is: " << config.GetSpeed() << std::endl;
