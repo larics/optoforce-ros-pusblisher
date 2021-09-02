@@ -11,7 +11,9 @@
 
         <node name="optoforce_node" pkg="optoforce_sensor" type="optoforce_sensor_node" output="screen"/>
 
-        <node name="optoforce_filter_node" pkg="optoforce_sensor" type="sensor_filter.py" output="screen"/>
+        <!--node name="optoforce_filter_node" pkg="optoforce_sensor" type="sensor_filter.py" output="screen"/-->
+
+        <!--node name="optoforce_filter_node" pkg="optoforce_sensor" type="sensor_median_filter.py" output="screen"/-->
 
     </group>
 

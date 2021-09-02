@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     ros::NodeHandle private_node_handle_("~");
 
     //Creating wrench publisher
-    ros::Publisher wrench_pub_raw = n.advertise<geometry_msgs::WrenchStamped>("/optoforce_node/OptoForceWrench_raw", 1);
+    //ros::Publisher wrench_pub_raw = n.advertise<geometry_msgs::WrenchStamped>("/optoforce_node/OptoForceWrench_raw", 1);
     ros::Publisher wrench_pub = n.advertise<geometry_msgs::WrenchStamped>("/optoforce_node/OptoForceWrench", 1);
 
     /*

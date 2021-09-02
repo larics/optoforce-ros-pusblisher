@@ -78,6 +78,10 @@ class sensorFilter():
 		for i in range(0, 6):
 			self.filter_y[i] = (self.a2/self.b2)*self.filter_u[i] + (self.a1/self.b2)*self.filter_u_k[i] + (self.a0/self.b2)*self.filter_u_kk[i] - (self.b1/self.b2)*self.filter_y_k[i] - (self.b0/self.b2)*self.filter_y_kk[i]  
 
+		### PAZI NA PREDZNAK SILE U Z!!!!!!
+		msg.wrench.force.z = -1*msg.wrench.force.z
+
+		self.sensorFilteredPub.publish(msg)
 
 		self.sensorReadingAvaraged.header.stamp = msg.header.stamp #.Time.now()
 		self.sensorReadingAvaraged.wrench.force.x = self.filter_y[0]
@@ -87,7 +91,7 @@ class sensorFilter():
 		self.sensorReadingAvaraged.wrench.torque.y = self.filter_y[4]
 		self.sensorReadingAvaraged.wrench.torque.z = self.filter_y[5]
 			
-		self.sensorFilteredPub.publish(self.sensorReadingAvaraged)
+		#self.sensorFilteredPub.publish(self.sensorReadingAvaraged)
 
 		# update old states
 
