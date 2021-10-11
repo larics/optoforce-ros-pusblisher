@@ -9,10 +9,10 @@ import numpy as np
 class sensorMedianFilter():
     def __init__(self):
         # Subscribers
-        rospy.Subscriber("/optoforce_node/OptoForceWrench_raw", WrenchStamped, self.OptoforceSensorCallback)
+        rospy.Subscriber("/optoforce_node/OptoForceWrench", WrenchStamped, self.OptoforceSensorCallback)
 
         # Publishers
-        self.sensorFilteredPub = rospy.Publisher('/optoforce_node/OptoForceWrench', WrenchStamped, queue_size = 1)
+        self.sensorFilteredPub = rospy.Publisher('/optoforce_node/OptoForceWrench_median', WrenchStamped, queue_size = 1)
 
         self.sensorReadings = []
         self.readingCount = 0

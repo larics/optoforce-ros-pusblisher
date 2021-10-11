@@ -9,7 +9,7 @@
 
         <rosparam file="$(find optoforce_sensor)/cfg/$(arg sens_params_file)" command="load"/>
 
-        <node name="optoforce_node" pkg="optoforce_sensor" type="optoforce_sensor_node" output="screen"/>
+        <node name="onrobot_node" pkg="optoforce_sensor" type="optoforce_sensor_node" output="screen"/>
 
         <!--node name="optoforce_filter_node" pkg="optoforce_sensor" type="sensor_filter.py" output="screen"/-->
 

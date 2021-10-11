@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     //Creating wrench publisher
     //ros::Publisher wrench_pub_raw = n.advertise<geometry_msgs::WrenchStamped>("/optoforce_node/OptoForceWrench_raw", 1);
-    ros::Publisher wrench_pub = n.advertise<geometry_msgs::WrenchStamped>("/optoforce_node/OptoForceWrench", 1);
+    ros::Publisher wrench_pub = n.advertise<geometry_msgs::WrenchStamped>(n.getNamespace() + "/optoforce_node/OptoForceWrench", 1);
 
     /*
     Create an OptoDAQWatcher instance that can enumerate connected DAQs via USB
