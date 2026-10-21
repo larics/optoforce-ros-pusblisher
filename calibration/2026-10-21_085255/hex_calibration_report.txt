@@ -1,0 +1,31 @@
+Calibration of the HEX against the ATI (linear model, 10119 samples, drift model linear)
+
+Errors vs the ATI after taring (RMS / 99th percentile). Cross-validation = each part of the
+recording predicted by a calibration fitted without it, i.e. what to expect on new data.
+
+axis unit       range covered         factory HEX          calibrated  cross-val RMS
+Fx      N   -42.53 ..   32.80    9.600 /  36.632     8.857 /  35.657         7.102
+Fy      N   -25.37 ..   47.16    8.087 /  49.253     7.470 /  49.463         7.406
+Fz      N  -102.60 ..   81.75   32.847 / 151.773    21.150 /  81.042        16.516
+Tx    N*m    -2.73 ..    2.29   0.7485 /  2.6009    0.5724 /  2.5205        0.5617
+Ty    N*m    -1.56 ..    1.63   0.7395 /  2.9018    0.3656 /  1.6060        0.3599
+Tz    N*m    -1.58 ..    1.93   0.3678 /  1.7937    0.3660 /  1.7871        0.3636
+
+Calibration matrix K (output frame <- HEX raw); diagonal = gain correction:
+   -0.15454   0.05275  -0.06367   0.12400   0.14319   4.47980
+   -0.05275   0.35489  -0.00394  -0.17809  -0.03545   0.82506
+    0.06367  -0.00394   0.13947   0.31860  -0.91090  -3.51065
+   -0.00575  -0.00799   0.00031  -0.06965  -0.08665  -0.50174
+    0.00185   0.01104  -0.00052  -0.03600   0.13643   0.19149
+   -0.00267  -0.00455   0.00009  -0.05612  -0.03661   0.80229
+Factory gain error (+ = the HEX reads too high): Fx +547.1%, Fy +181.8%, Fz +617.0%, Tx +1335.7%, Ty +633.0%, Tz +24.6%
+Largest cross-talk corrected: full-scale Tz on the HEX shows as 468.2 % of full-scale Tx
+
+HEX native frame, identified from the data (in the ATI frame):
+  origin  x   -2.98  y   -3.62  z   +7.21 mm
+  rotation roll   +0.60  pitch  +23.08  yaw  -28.09 deg
+  NOTE: the HEX reports a left-handed frame; Fx has the opposite sign of a right-handed frame. The calibrated output is right-handed.
+  force axes vs torque axes differ by nan deg; non-rigid torque coupling 99.2 %
+Output frame "hex_calibrated": origin (-3.0, -3.6, +7.2) mm, rpy (+0.60, +23.08, -28.09) deg in the ATI frame
+Excitation condition number 12.7 (below ~10 is good). Weakest direction: +Fx with +Fz
+NOTE: s1: 1.6 % of samples dropped (reference above 95 % of its rated range, or HEX above capacity)

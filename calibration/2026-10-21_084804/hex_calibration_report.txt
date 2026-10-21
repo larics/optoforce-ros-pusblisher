@@ -1,0 +1,30 @@
+Calibration of the HEX against the ATI (linear model, 13870 samples, drift model linear)
+
+Errors vs the ATI after taring (RMS / 99th percentile). Cross-validation = each part of the
+recording predicted by a calibration fitted without it, i.e. what to expect on new data.
+
+axis unit       range covered         factory HEX          calibrated  cross-val RMS
+Fx      N   -40.16 ..   53.34   11.725 /  46.877    11.682 /  46.868        10.311
+Fy      N  -133.92 ..   86.89   29.553 / 115.755    29.551 / 115.780        25.482
+Fz      N   -22.92 ..   32.07   16.225 /  66.910     5.926 /  31.579         5.754
+Tx    N*m    -2.00 ..    3.49   1.1846 /  5.4625    0.6229 /  2.5845        0.5811
+Ty    N*m    -1.57 ..    2.57   0.7697 /  3.4908    0.4375 /  2.1485        0.4244
+Tz    N*m    -4.08 ..    2.90   0.7825 /  3.0719    0.7824 /  3.0716        0.7138
+
+Calibration matrix K (output frame <- HEX raw); diagonal = gain correction:
+    0.41718   0.02776   0.01874   1.15362   2.68514 -14.06616
+    0.02776   0.44664   0.06889  -1.41253  -0.96282  25.18139
+    0.01874   0.06889   0.04458   0.24647   1.27859 -13.57848
+    0.02072  -0.00585  -0.00041   0.19303   0.31159   2.81813
+   -0.00661  -0.00194  -0.00098  -0.07547  -0.15093  -0.31467
+   -0.00241  -0.00250   0.00139  -0.07434  -0.09931  -1.20169
+Factory gain error (+ = the HEX reads too high): Fx +139.7%, Fy +123.9%, Fz +2142.9%, Tx +418.1%, Ty +562.6%, Tz -16.8%
+Largest cross-talk corrected: full-scale Tz on the HEX shows as 989.8 % of full-scale Fz
+
+HEX native frame, identified from the data (in the ATI frame):
+  origin  x  +21.80  y  -12.02  z  +35.85 mm
+  rotation roll  +87.51  pitch  -16.39  yaw +179.65 deg
+  force axes vs torque axes differ by nan deg; non-rigid torque coupling 79.7 %
+Output frame "hex_calibrated": origin (+21.8, -12.0, +35.9) mm, rpy (+87.51, -16.39, +179.65) deg in the ATI frame
+Excitation condition number 14.7 (below ~10 is good). Weakest direction: +Fz
+NOTE: s2: HEX delay 99.8 ms is at the search limit; raise --max-lag

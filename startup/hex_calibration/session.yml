@@ -1,0 +1,44 @@
+name: hex_calibration
+root: ./
+startup_window: calibration
+pre_window: |
+  source <%= @settings["setup_name"] %>
+windows:
+  - roscore:
+      layout: tiled
+      panes:
+        - roscore
+        # the reference F/T sensor (REFERENCE_DRIVER in the setup file)
+        - waitForRos; hexcal_driver "$REFERENCE_DRIVER"
+        # the HEX (HEX_DRIVER in the setup file)
+        - waitForRos; hexcal_driver "$HEX_DRIVER"
+        # rates of both
+        - waitForRos; waitFor $REFERENCE_TOPIC; waitFor $HEX_TOPIC; rostopic hz $REFERENCE_TOPIC $HEX_TOPIC
+  - calibration:
+      layout: even-horizontal
+      panes:
+        # the calibration node: dashboard + keys [s] [f] [z] [d] [m] [q]
+        - waitForRos; rosparam load $HEXCAL_PARAMS /hex_calibration;
+          waitFor $REFERENCE_TOPIC; waitFor $HEX_TOPIC;
+          rosrun optoforce_sensor hex_calibration_node.py __name:=hex_calibration
+        - hexcal_help
+  - plots:
+      layout: tiled
+      panes:
+        # the reference against its rated range (red), 90 % (orange) and what you reached (green)
+        - waitForRos; rosparam load $HEXCAL_PARAMS /hex_calibration_monitor;
+          waitFor $REFERENCE_TOPIC;
+          rosrun optoforce_sensor hex_calibration_monitor.py __name:=hex_calibration_monitor
+        - waitForRos; waitFor /hex_calibration/plot/limit_max;
+          rosrun rqt_multiplot rqt_multiplot
+          --multiplot-config $HEXCAL_PKG/cfg/hex_calibration_plots.xml
+          --multiplot-run-all
+  - verify:
+      layout: tiled
+      panes:
+        # opens by itself once the fit is done
+        - waitForRos; waitFor $HEXCAL_OUTPUT;
+          rosrun rqt_multiplot rqt_multiplot
+          --multiplot-config $HEXCAL_PKG/cfg/hex_calibration_verify.xml
+          --multiplot-run-all
+        - waitForRos; waitFor $HEXCAL_OUTPUT; rostopic echo -c $HEXCAL_OUTPUT/wrench

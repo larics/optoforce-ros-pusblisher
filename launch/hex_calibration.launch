@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- HEX calibration against a reference F/T sensor (any geometry_msgs/WrenchStamped), HEX_CALIBRATION.md.
+     Settings: cfg/hex_calibration_params.yaml. The sensor drivers are not started here.
+     Under roslaunch the node has no keyboard: drive it with its services
+       rosservice call /hex_calibration/{start,stop,fit,zero,discard}
+     For the dashboard with keys use the tmux session: startup/hex_calibration/start.sh -->
+<launch>
+  <arg name="params" default="$(find optoforce_sensor)/cfg/hex_calibration_params.yaml"/>
+  <arg name="plots"  default="true"/>   <!-- rqt_multiplot (ros-noetic-rqt-multiplot) -->
+
+  <node name="hex_calibration" pkg="optoforce_sensor" type="hex_calibration_node.py" output="screen">
+    <rosparam command="load" file="$(arg params)"/>
+  </node>
+  <node name="hex_calibration_monitor" pkg="optoforce_sensor" type="hex_calibration_monitor.py" output="screen">
+    <rosparam command="load" file="$(arg params)"/>
+  </node>
+  <node if="$(arg plots)" name="hex_calibration_plots" pkg="rqt_multiplot" type="rqt_multiplot"
+        args="--multiplot-config $(find optoforce_sensor)/cfg/hex_calibration_plots.xml --multiplot-run-all"/>
+</launch>

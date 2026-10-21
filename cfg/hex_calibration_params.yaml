@@ -1,0 +1,31 @@
+# Settings of the HEX calibration (HEX_CALIBRATION.md). Loaded by launch/hex_calibration.launch and
+# by the tmux session startup/hex_calibration for hex_calibration_node.py and hex_calibration_monitor.py.
+
+# --- reference sensor -------------------------------------------------------------------------
+# Any F/T sensor publishing geometry_msgs/WrenchStamped, mounted under the HEX so that every load
+# on the handle passes through both. Only these four lines describe it (now: ATI Gamma SI-65-5).
+reference_topic: /ft_sensor/wrench
+reference_limits: [65.0, 65.0, 200.0, 5.0, 5.0, 5.0]  # its rated range Fx Fy Fz [N] Tx Ty Tz [N*m]; [] = unknown
+reference_invalid_log: "gauge saturated"           # text its driver logs for invalid readings; "" = none
+reference_name: REF                                # label on the dashboard
+
+# --- the HEX ----------------------------------------------------------------------------------
+hex_topic: /optoforce_node/OptoForceWrench
+hex_limits: [200.0, 200.0, 200.0, 10.0, 10.0, 6.5]  # capacity (HEX-E); samples above it are not used
+
+# --- recording --------------------------------------------------------------------------------
+targets: [40.0, 40.0, 80.0, 2.0, 2.0, 2.0]          # load range to cover per HEX axis (excitation hints)
+warn: 0.9                 # the orange line: aim for this fraction of the reference's rated range
+session_duration: 0       # s; 0 = stop each session with [s]
+zero_seconds: 1.0         # tare duration (hands off)
+
+# --- fit --------------------------------------------------------------------------------------
+model: linear             # linear (6x6: gains and cross-talk) | quadratic (also non-linearity)
+drift: linear             # HEX offset drift during a session: none | linear | knots:SECONDS
+frame: native             # output frame: native (the HEX's own) | top (HEX axes, origin top_mm above
+top_mm: 74.0              #   the reference origin) | reference (the reference sensor's frame)
+
+# --- after the fit ----------------------------------------------------------------------------
+output_topic: /optoforce_node/OptoForceWrench_calibrated     # the calibrated HEX
+reference_output: /hex_calibration/reference_in_hex           # the reference moved into the HEX frame
+drift_tau: 0.0            # s; > 0: the calibrated HEX follows the reference's slow drift
