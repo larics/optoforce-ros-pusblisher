@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!-- The HEX corrected with its calibration (cfg/hex_calibration.yaml, written by the HEX calibration,
+     HEX_CALIBRATION.md). Tares over the first second: keep the sensor unloaded.
+     Tare again: rosservice call /hex_calibrated/zero
+     With the reference sensor still under the HEX, see both side by side:
+       roslaunch optoforce_sensor hex_calibrated.launch reference_topic:=/ft_sensor/wrench plots:=true -->
+<launch>
+  <arg name="calibration"     default="$(find optoforce_sensor)/cfg/hex_calibration.yaml"/>
+  <arg name="input_topic"     default="/optoforce_node/OptoForceWrench"/>
+  <arg name="output_topic"    default="/optoforce_node/OptoForceWrench_calibrated"/>
+  <arg name="frame_id"        default=""/>   <!-- empty: the frame name stored in the calibration -->
+  <arg name="reference_topic" default=""/>   <!-- optional: a reference sensor still under the HEX -->
+  <arg name="drift_tau"       default="0"/>  <!-- with reference_topic: >0 follows its slow drift (s) -->
+  <arg name="plots"           default="false"/>  <!-- rqt_multiplot: calibrated HEX vs the reference, per axis -->
+
+  <node name="hex_calibrated" pkg="optoforce_sensor" type="hex_calibrated_node.py" output="screen">
+    <param name="calibration"     value="$(arg calibration)"/>
+    <param name="input_topic"     value="$(arg input_topic)"/>
+    <param name="output_topic"    value="$(arg output_topic)"/>
+    <param name="frame_id"        value="$(arg frame_id)"/>
+    <param name="reference_topic" value="$(arg reference_topic)"/>
+    <param name="drift_tau"       value="$(arg drift_tau)"/>
+  </node>
+  <node if="$(arg plots)" name="hex_calibrated_plots" pkg="rqt_multiplot" type="rqt_multiplot"
+        args="--multiplot-config $(find optoforce_sensor)/cfg/hex_calibrated_vs_reference.xml --multiplot-run-all"/>
+</launch>

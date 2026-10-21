@@ -1,0 +1,55 @@
+# 6-axis F/T calibration from ft_crosscal (ati_gamma_ft/hex_calibration)
+format: ft_crosscal/1
+created: '2026-10-21T09:14:27'
+model: linear
+axes: [Fx, Fy, Fz, Tx, Ty, Tz]
+units: {force: N, torque: N*m, length: m}
+equation: 'w = K raw + Q quad(raw/scale) - tare   (quad: products raw_i*raw_j, i<=j)'
+frame:
+  name: hex_calibrated
+  mode: native
+  R_in_ati:
+  - [0.992634447, 0.0863453907, 0.0849783923]
+  - [-0.0758793197, 0.98992961, -0.119506053]
+  - [-0.0944414236, 0.112177723, 0.989190061]
+  xyz_in_ati_mm: [0.642394596, -0.160957573, 28.2429631]
+  rpy_in_ati_deg: [6.46990749, 5.4191712, -4.37132332]
+K:
+- [-0.38406904, -0.00948668815, -0.00892382912, 0.146548723, -0.583257227, 1.15384275]
+- [0.00948668815, 0.240895644, 0.0113238021, 0.137100588, 0.187851203, -0.645926474]
+- [0.00892382912, 0.0113238021, 0.0947331709, -0.0104469444, 1.7516981, 2.05166088]
+- [6.56168106e-05, -0.00120482434, 0.000161905507, -0.115356436, -0.0130970245, -0.147014146]
+- [0.00195972389, 0.000322496733, -0.000131865192, -0.000245537558, 0.120306921, 0.147546884]
+- [-0.000888652004, -0.000492122036, 9.58116627e-05, -0.0128628073, -0.0177892529, 0.934510391]
+offset_at_recording: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+info:
+  sessions: [s1, s2]
+  hex_delay_ms: [12.7703969, 15.4554413]
+  samples: 6481
+  rate_hz: 100.0
+  lowpass_hz: 5.0
+  drift: linear
+  ridge: 1.0e-07
+  identified_mount:
+    xyz_mm: [0.642394596, -0.160957573, 28.2429631]
+    rpy_deg: [6.46990749, 5.4191712, -4.37132332]
+    mirrored_axes: [Fx]
+    force_vs_torque_axes_deg: .nan
+    nonrigid_torque_coupling: 0.211682996
+  error_rms: {Fx: 2.79361848, Fy: 2.25163852, Fz: 5.31438595, Tx: 0.101842709, Ty: 0.139263162, Tz: 0.0442132778}
+  error_p99: {Fx: 10.7714238, Fy: 8.02825331, Fz: 20.6282126, Tx: 0.455385363, Ty: 0.543187613, Tz: 0.186739843}
+  error_rms_crossval: {Fx: 3.77550026, Fy: 2.421186, Fz: 5.80205316, Tx: 0.100674939, Ty: 0.153910868, Tz: 0.0442589995}
+  factory_error_rms: {Fx: 10.1112773, Fy: 10.3312515, Fz: 54.4984235, Tx: 1.9463044, Ty: 1.64327685, Tz: 0.0733591632}
+  factory_error_p99: {Fx: 45.9139374, Fy: 36.178458, Fz: 158.057842, Tx: 7.03171815, Ty: 6.10703605, Tz: 0.261162831}
+  dut_limits: [200.0, 200.0, 200.0, 10.0, 10.0, 6.5]
+  ref_limits: [65.0, 65.0, 200.0, 5.0, 5.0, 5.0]
+  range_covered:
+    Fx: [-19.567737, 24.9159674]
+    Fy: [-16.0880383, 15.46685]
+    Fz: [-38.2754818, 3.582461]
+    Tx: [-1.02080144, 1.27724404]
+    Ty: [-0.993563575, 1.04755793]
+    Tz: [-3.1075219, 2.39508502]
+  excitation_condition: 4.39613352
+  notes: ['s1: 23.1 % of samples dropped (reference above 95 % of its rated range, or HEX above capacity)', 's2:
+      34.9 % of samples dropped (reference above 95 % of its rated range, or HEX above capacity)']

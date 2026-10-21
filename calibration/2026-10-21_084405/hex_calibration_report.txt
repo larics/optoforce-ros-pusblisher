@@ -1,0 +1,31 @@
+Calibration of the HEX against the ATI (linear model, 5640 samples, drift model linear)
+
+Errors vs the ATI after taring (RMS / 99th percentile). Cross-validation = each part of the
+recording predicted by a calibration fitted without it, i.e. what to expect on new data.
+
+axis unit       range covered         factory HEX          calibrated  cross-val RMS
+Fx      N   -44.46 ..    4.53    8.460 /  28.206     8.460 /  28.206         5.796
+Fy      N  -173.81 ..   90.42   51.202 / 134.926    51.202 / 134.926        32.594
+Fz      N   -24.17 ..    5.16    3.755 /  14.519     3.755 /  14.519         3.200
+Tx    N*m   -97.40 ..   46.40  27.7426 / 71.1660   27.7426 / 71.1660       18.4877
+Ty    N*m    -2.84 ..   24.95   4.8603 / 14.3481    4.8603 / 14.3481        3.5933
+Tz    N*m   -33.34 ..   46.81  15.2335 / 40.2885   15.2335 / 40.2885       10.4385
+
+Calibration matrix K (output frame <- HEX raw); diagonal = gain correction:
+    0.00000   0.00000  -0.00000  -0.00000  -0.00000   0.00000
+    0.00000   0.00000  -0.00000  -0.00000  -0.00000   0.00000
+    0.00000   0.00000  -0.00000  -0.00000  -0.00000  -0.00000
+    0.00000   0.00000  -0.00000  -0.00000  -0.00000  -0.00000
+   -0.00000  -0.00000   0.00000   0.00000   0.00000   0.00000
+    0.00000   0.00000  -0.00000  -0.00000  -0.00000  -0.00000
+Factory gain error (+ = the HEX reads too high): Fx +5365936920429.3%, Fy +115146087684.8%, Fz +3802440429477.0%, Tx +1056891150.9%, Ty +235368524657.6%, Tz +604302282688.7%
+Largest cross-talk corrected: full-scale Tx on the HEX shows as 30297.1 % of full-scale Tz
+
+HEX native frame, identified from the data (in the ATI frame):
+  origin  x +341.92  y -520.60  z -1774.61 mm
+  rotation roll  +87.52  pitch   -9.63  yaw  +53.22 deg
+  NOTE: the HEX reports a left-handed frame; Fz has the opposite sign of a right-handed frame. The calibrated output is right-handed.
+  force axes vs torque axes differ by 164.28 deg; non-rigid torque coupling 95.3 %
+Output frame "hex_calibrated": origin (+341.9, -520.6, -1774.6) mm, rpy (+87.52, -9.63, +53.22) deg in the ATI frame
+Excitation condition number 4927.7 (below ~10 is good). Weakest direction: -Fz
+NOTE: s1: HEX delay -104.0 ms is at the search limit; raise --max-lag

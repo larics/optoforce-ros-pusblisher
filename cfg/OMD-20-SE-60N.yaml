@@ -1,0 +1,6 @@
+optoforce_node:
+    fx_gain : 268
+    fy_gain : 268
+    fz_gain : 268
+    speed: 1000
+    filter: 0
